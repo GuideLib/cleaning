@@ -1,0 +1,43 @@
+
+version: '3.8'
+
+services:
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${ROOT_PASS}
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+      - MONGO_INITDB_USER=${DB_USERNAME}
+      - MONGO_INITDB_PWD=${DB_PASSWORD}
+    volumes:
+      - ./mongo-entrypoint/:/docker-entrypoint-initdb.d/
+      - data-db:/data/db/
+    networks:
+      - mongo-db-network
+  
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    restart: always
+    ports:
+      - '8081:8081'
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=${DB_NAME}
+      - ME_CONFIG_MONGODB_AUTH_USERNAME=${DB_USERNAME}
+      - ME_CONFIG_MONGODB_AUTH_PASSWORD=${DB_PASSWORD}
+    networks:
+      - mongo-db-network
+  
+networks:
+  mongo-db-network:
+    driver: bridge
+  # nginx-proxy:
+
+volumes:
+  data-db:
