@@ -33,11 +33,25 @@ services:
       - ME_CONFIG_MONGODB_AUTH_PASSWORD=${DB_PASSWORD}
     networks:
       - mongo-db-network
+
+  landing:
+    container_name: landing
+    build: 
+      context: .
+    volumes:
+      - './landing:/app'
+      - '/app/node_modules'
+    ports:
+      - 80:80
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
   
 networks:
   mongo-db-network:
     driver: bridge
   # nginx-proxy:
+  
 
 volumes:
   data-db:
